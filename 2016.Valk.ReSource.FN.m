@@ -176,6 +176,7 @@ for readcsv = 1
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% generate change brain
     % ---------------
+    % this one is not in P /data/ but in P I guess
     zmap = load('zmyDBMsurf.mat')
     
 end
@@ -400,9 +401,6 @@ for initi = 1
     tomChange_t1N        = minit;
     tomChange_t2N        = minit;
     
-    hearChange_bl        = minit;
-    hearChange_t1        = minit;
-    hearChange_t2        = minit;
 
     rp_arestChange_bl    = zeros(size(FD_Power_RS))-666;
     rp_arestChange_t1    = zeros(size(FD_Power_RS))-666;
@@ -477,7 +475,6 @@ for i = 1: length(id)
             tomChange_bl(i)  = (tom(i)-tom(inter0));
             tomChange_blN(i) = (tom(i)-tom(inter0))./tom(inter0);
             
-            hearChange_bl(i)  = (hearing(i)-hearing(inter0));
         end
     end
     
@@ -488,8 +485,7 @@ for i = 1: length(id)
             tomChange_t1N(i) = (tom(i)-tom(inter1))./tom(inter1);
             tomChange_t1b(i) =  tom(inter1);
             
-            hearChange_t1(i)  = (hearing(i)-hearing(inter1));
-            
+
         end
     end
     
@@ -499,7 +495,6 @@ for i = 1: length(id)
             tomChange_t2(i)  = (tom(i)-tom(inter2));
             tomChange_t2N(i) = (tom(i)-tom(inter2))./tom(inter2);
             
-            hearChange_t2(i)  = (hearing(i)-hearing(inter2));
         end
     end
     
