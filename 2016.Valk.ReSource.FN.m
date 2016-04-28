@@ -16,8 +16,8 @@ clear all;
 
 for load_data = 1
 
-    P           = ['/scr/elbe10/boris/Resting_sofie/matlab_sofie/Project3/Boris'];
-    %P           = '/Users/boris/Downloads/Boris'
+    %P           = ['/scr/elbe10/boris/Resting_sofie/matlab_sofie/Project3/Boris'];
+    P           = '/Users/boris/Documents/0_preSubmitStage/2016.ReSource/Boris_MAY1st/'
     addpath([P '/toolboxes/2012-08-14_BCT/'])
     addpath([P '/toolboxes/useful/'])
     addpath([P '/toolboxes/surfstat_chicago'])
@@ -74,8 +74,9 @@ for load_data = 1
     
     % load:  Destrieux atlas
     % -----------------
+    
     [vertices, label, colortable] = ...
-        fs_read_annotation([SPATH 'lh.aparc.a2009s.annot']);
+        fs_read_annotation([ 'lh.aparc.a2009s.annot']);
     aparcleft = label;
     for i = 1:size(colortable.table,1)
         mycode = colortable.table(i,5);
@@ -83,7 +84,7 @@ for load_data = 1
     end
     
     [vertices, label, colortable] = ...
-        fs_read_annotation([SPATH 'rh.aparc.a2009s.annot']);
+        fs_read_annotation([ 'rh.aparc.a2009s.annot']);
     aparcright = label;
     for i = 1:size(colortable.table,1)
         mycode = colortable.table(i,5);
@@ -176,11 +177,9 @@ for readcsv = 1
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% generate change brain
     % ---------------
-    % this one is not in P /data/ but in P I guess
     zmap = load('zmyDBMsurf.mat')
     
 end
-
 
 for change_brain = 1
     
@@ -401,6 +400,9 @@ for initi = 1
     tomChange_t1N        = minit;
     tomChange_t2N        = minit;
     
+    hearChange_bl        = minit;
+    hearChange_t1        = minit;
+    hearChange_t2        = minit;
 
     rp_arestChange_bl    = zeros(size(FD_Power_RS))-666;
     rp_arestChange_t1    = zeros(size(FD_Power_RS))-666;
@@ -475,6 +477,7 @@ for i = 1: length(id)
             tomChange_bl(i)  = (tom(i)-tom(inter0));
             tomChange_blN(i) = (tom(i)-tom(inter0))./tom(inter0);
             
+            %hearChange_bl(i)  = (hearing(i)-hearing(inter0));
         end
     end
     
@@ -485,7 +488,8 @@ for i = 1: length(id)
             tomChange_t1N(i) = (tom(i)-tom(inter1))./tom(inter1);
             tomChange_t1b(i) =  tom(inter1);
             
-
+            %hearChange_t1(i)  = (hearing(i)-hearing(inter1));
+            
         end
     end
     
@@ -495,6 +499,7 @@ for i = 1: length(id)
             tomChange_t2(i)  = (tom(i)-tom(inter2));
             tomChange_t2N(i) = (tom(i)-tom(inter2))./tom(inter2);
             
+            %hearChange_t2(i)  = (hearing(i)-hearing(inter2));
         end
     end
     
@@ -885,7 +890,7 @@ pwe = 0.025;
 
 %% SUBJECTS INCLUSIONS
 for subjects_incl = 1
-    keep = find(isthere_ct ==1), find(~strcmp(group4,'Group3')))
+    keep = mintersect(find(isthere_ct ==1), find(~strcmp(group4,'Group3')))
     size(keep) %N=848
     size((find(tpnum(keep)==0))) % N = 232
     size(intersect(find(tpnum(keep)==0), find(strcmp(group4(keep),'Group_1')))) %77/80 
@@ -969,7 +974,7 @@ end
 
 
 for aal = 1
-    cd([P '/data/')
+    cd([P '/data/'])
     load('aal.mat')
 end
 
@@ -1973,6 +1978,7 @@ end
 
 %% Compassion x AFFECT   
 for behavioralaffect = 1
+    
     for figurec = 1
         keep1   = find((strcmp(groupN,'Affect')))
         keep2   = intersect(find(X(:,1) >-666), find(sum(X,2)~=0));
@@ -4687,23 +4693,3 @@ for FIG3B = 1
         disp([ 'ROI: ' num2str(j) ',t= ' num2str(slm.t)])
     end
 end
-
-
-
-
-
-
-
-
-  
-
-    
-    
-    
-    
-
-  
-  
-   
- 
-    
