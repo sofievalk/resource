@@ -16,8 +16,8 @@ clear all;
 
 for load_data = 1
 
-    %P           = ['/scr/elbe10/boris/Resting_sofie/matlab_sofie/Project3/Boris'];
-    P           = '/Users/boris/Documents/0_preSubmitStage/2016.ReSource/Boris_MAY1st/'
+    P           = ['/scr/elbe10/boris/Resting_sofie/matlab_sofie/Project3/Boris'];
+
     addpath([P '/toolboxes/2012-08-14_BCT/'])
     addpath([P '/toolboxes/useful/'])
     addpath([P '/toolboxes/surfstat_chicago'])
@@ -74,9 +74,8 @@ for load_data = 1
     
     % load:  Destrieux atlas
     % -----------------
-    
     [vertices, label, colortable] = ...
-        fs_read_annotation([ 'lh.aparc.a2009s.annot']);
+        fs_read_annotation([SPATH 'lh.aparc.a2009s.annot']);
     aparcleft = label;
     for i = 1:size(colortable.table,1)
         mycode = colortable.table(i,5);
@@ -84,7 +83,7 @@ for load_data = 1
     end
     
     [vertices, label, colortable] = ...
-        fs_read_annotation([ 'rh.aparc.a2009s.annot']);
+        fs_read_annotation([SPATH 'rh.aparc.a2009s.annot']);
     aparcright = label;
     for i = 1:size(colortable.table,1)
         mycode = colortable.table(i,5);
@@ -105,7 +104,7 @@ end
 % -----------------
 for readcsv = 1
         
-        fid     = fopen([P '/time_points_scan_NOV2015_4.csv']);
+        fid     = fopen(['/scr/elbe10/boris/Resting_sofie/matlab_sofie/csv/time_points_scan_NOV2015_4.csv']);
         C       = textscan(fid,'%s%s%n%s%s%s%s%s%n%n%n%n%n','Delimiter',',','CollectOutput',1,'Headerlines',1);
         fclose(fid);
         dropout             = C{4}(:,4);
@@ -150,8 +149,7 @@ for readcsv = 1
             end
             
         end
-
- 
+    end
     
     %% retreat data (Appendix A) (to calculate not days between measurement but days between training
     % TC1:
@@ -166,7 +164,7 @@ for readcsv = 1
 
     
     
-    cd([P '/data/'])
+    cd([P '/data/')
     load('CT.mat')
     load('isthere-ct.mat')   
     load('isthere-dbm.mat')
@@ -179,10 +177,7 @@ for readcsv = 1
     % ---------------
     zmap = load('zmyDBMsurf.mat')
     
-end
-
 for change_brain = 1
-    
         minit        = zeros(size(id));
         tp_t0_there  = minit;
         tp_t1_there  = minit;
@@ -332,10 +327,8 @@ for change_brain = 1
                 mask = mean(CT,1)>0.9;
         
 end
-  
-for load_behav = 1 
     
-    cd([P '/data/'])
+    cd([P '/data/')
     load('P_body.mat')
     load('P_breath.mat')
     load('A_hearth.mat')
@@ -355,10 +348,14 @@ for load_behav = 1
     load('rp_arest.mat')
     load('FD_Power_RS.mat')
     
-end
+
+
+
+
+
+
 
 for initi = 1
-    
     minit               = zeros(size(id))-666;
     
     com_bl              = minit;
@@ -461,7 +458,6 @@ for i = 1: length(id)
         end
     end
 end
-
 %% tom
 for i = 1: length(id)
     i
@@ -504,7 +500,6 @@ for i = 1: length(id)
     end
     
 end
-
 %% compassion
 for i = 1: length(id)
     i
@@ -890,7 +885,7 @@ pwe = 0.025;
 
 %% SUBJECTS INCLUSIONS
 for subjects_incl = 1
-    keep = mintersect(find(isthere_ct ==1), find(~strcmp(group4,'Group3')))
+    keep = intersect(find(isthere_ct ==1), find(~strcmp(group4,'Group3')))
     size(keep) %N=848
     size((find(tpnum(keep)==0))) % N = 232
     size(intersect(find(tpnum(keep)==0), find(strcmp(group4(keep),'Group_1')))) %77/80 
@@ -940,6 +935,31 @@ for subjects_incl = 1
     mean(age(keep)) %40.3
     std(age(keep))  %9.6
     size(intersect(find(tpnum(keep)==0), find(strcmp(sex(keep),'female')))) %96 (81)
+    
+    %% TC3 
+    keep = intersect(find(isthere_ct ==1), find(strcmp(group4,'Group3')))
+    size(keep) 
+    size(intersect(find(tpnum(keep)==0), find(strcmp(group4(keep),'Group3')))) %72
+    size(intersect(find(tpnum(keep)==1), find(strcmp(group4(keep),'Group3')))) %69
+    idk = id(keep)
+    
+    idk(intersect(find(tpnum(keep)==0), find(strcmp(group4(keep),'Group3'))))
+    idk(intersect(find(tpnum(keep)==1), find(strcmp(group4(keep),'Group3'))))
+    
+    
+    keep    = mintersect(find(isthere_ct ==1),...
+        find(tp_t0_there==1), ...    
+        find(tp_t1_there==1), ...
+        union(find(tpnum==0), (find(tpnum==1))));
+    
+    size(keep) %N = 716
+    size((find(tpnum(keep)==0))) % N = 179
+    size(intersect(find(tpnum(keep)==0), find(strcmp(group4(keep),'Group3')))) %67
+    size(intersect(find(tpnum(keep)==0), find(strcmp(group4(keep),'Group_2')))) %64
+    size(intersect(find(tpnum(keep)==0), find(strcmp(group4(keep),'Group_1')))) %69
+
+   
+    
 end
 
 %% for QC
@@ -974,7 +994,7 @@ end
 
 
 for aal = 1
-    cd([P '/data/'])
+    cd([P '/data/')
     load('aal.mat')
 end
 
@@ -1065,6 +1085,24 @@ for FIG12 = 1
               % t-val = 4.1444 AAL: 51, coordinate: -16.61529     -100.7017       4.65367
           end
           
+          numclus = sum(statsG1.clus.P < 0.025);
+          for i = 1 : numclus
+              seedx       = mean(CT(keep,statsG1.clusid==i),2);
+              seedxt      = term(seedx);
+              
+              M2       = 1 + CH + A + S + G4 + DT + G4*DT + Sub;
+              slm1 = SurfStatLinMod(seedx,M2);
+              slm1 = SurfStatT(slm1, contrast);
+              disp([ 'ROI: ' num2str(j) ',t= ' num2str(slm1.t)])
+              % ROI: 1,t= 3.9804
+              % ROI: 1,t= 4.2322
+              
+              M3       = CH + A + S + (1 + G4)*(1 + DT)*(1 + random(Sub)) + I;
+              slm1 = SurfStatLinMod(seedx,M3);
+              slm1 = SurfStatT(slm1, contrast);
+              disp([ 'ROI: ' num2str(j) ',t= ' num2str(slm1.t)])
+          end
+          
           contrast = ((((G4.Group_2.* DT.T1)-(G4.Group_2.* DT.T0)) - ((G4.Control.* DT.T1)-(G4.Control.* DT.T0))))
           slm  	= SurfStatT(slm,contrast);
           statsG2   = BoSurfStatPlotAllStatsNew(slm, SM, mask, p_thresh, 0.025, ...
@@ -1103,7 +1141,25 @@ for FIG12 = 1
               % t-val = 3.571 AAL: 13, coordinate: -40.1846      29.9264      13.0839
               
           end
-           
+          
+          numclus = sum(statsG2.clus.P < 0.025);
+          for i = 1 : numclus
+              seedx       = mean(CT(keep,statsG2.clusid==i),2);
+              seedxt      = term(seedx);
+              
+              M2       = 1 + CH + A + S + G4 + DT + G4*DT + Sub;
+              slm1 = SurfStatLinMod(seedx,M2);
+              slm1 = SurfStatT(slm1, contrast);
+              disp([ 'ROI: ' num2str(j) ',t= ' num2str(slm1.t)])
+              % ROI: 1,t= 3.9804
+              % ROI: 1,t= 4.2322
+              
+              M3       = CH + A + S + (1 + G4)*(1 + DT)*(1 + random(Sub)) + I;
+              slm1 = SurfStatLinMod(seedx,M3);
+              slm1 = SurfStatT(slm1, contrast);
+              disp([ 'ROI: ' num2str(j) ',t= ' num2str(slm1.t)])
+          end
+          
           inter_tval = (statsG1.t) .* (statsG2.t)
           inter_len = (statsG1.p<p_thresh) .* (statsG2.p<p_thresh)
           f=figure;
@@ -1190,6 +1246,11 @@ for FIG12 = 1
               disp([ 'ROI: ' num2str(j) ',t= ' num2str(slm1.t)])
               % ROI: 1,t= 3.9804
               % ROI: 1,t= 4.2322
+              
+              M3       = CH + A + S + (1 + G4)*(1 + DT)*(1 + random(Sub)) + I;
+              slm1 = SurfStatLinMod(seedx,M3);
+              slm1 = SurfStatT(slm1, contrast);
+              disp([ 'ROI: ' num2str(j) ',t= ' num2str(slm1.t)])
           end
           
           %% test for complex model with random effects
@@ -1204,6 +1265,10 @@ for FIG12 = 1
               disp([ 'ROI: ' num2str(j) ',t= ' num2str(slm1.t)])
               % ROI: 1,t= -4.7594
               % ROI: 1,t= -4.7681
+                M3       = CH + A + S + (1 + G4)*(1 + DT)*(1 + random(Sub)) + I;
+              slm1 = SurfStatLinMod(seedx,M3);
+              slm1 = SurfStatT(slm1, contrast);
+              disp([ 'ROI: ' num2str(j) ',t= ' num2str(slm1.t)])
           end
           
           
@@ -1297,10 +1362,10 @@ for FIG12 = 1
               % ROI: 1,t= 4.4525
               % ROI: 1,t= 3.7377
               % ROI: 1,t= 3.5254
-              %         M3       = CH + A + S + (1 + G4)*(1 + DT)*(1 + random(Sub)) + I;
-              %         slm1 = SurfStatLinMod(seedx,M3);
-              %         slm1 = SurfStatT(slm1, contrast);
-              %         disp([ 'ROI: ' num2str(j) ',t= ' num2str(slm1.t)])
+                      M3       = CH + A + S + (1 + G4)*(1 + DT)*(1 + random(Sub)) + I;
+                      slm1 = SurfStatLinMod(seedx,M3);
+                      slm1 = SurfStatT(slm1, contrast);
+                      disp([ 'ROI: ' num2str(j) ',t= ' num2str(slm1.t)])
           end
           
           numclus = sum(perspectiveF2.stats.clus.P < 0.025);
@@ -1344,6 +1409,10 @@ for FIG12 = 1
               % ROI: 1,t= 4.1286
               % ROI: 1,t= 3.7002
               % ROI: 1,t= 3.1319
+              M3       = CH + A + S + (1 + G4)*(1 + DT)*(1 + random(Sub)) + I;
+              slm1 = SurfStatLinMod(seedx,M3);
+              slm1 = SurfStatT(slm1, contrast);
+              disp([ 'ROI: ' num2str(j) ',t= ' num2str(slm1.t)])
           end
           
           %% AAL
@@ -1965,8 +2034,8 @@ end
 %% behavior
 for whotokeep = 1
     keep1   = union(find(strcmp(groupN,'Affect')),    find(strcmp(groupN,'Perspective')));
-    keep1   = union(keep1,    find(strcmp(groupN,'Presence')));
-    %keep1   = union(keep1,    find(strcmp(groupN,'Control')));
+    %keep1   = union(keep1,    find(strcmp(groupN,'Presence')));
+    keep1   = union(keep1,    find(strcmp(groupN,'Control')));
     
     keep4   = find(~(strcmp(group4,'Group3')));
     keep2   = intersect(find(X(:,1) >-666), find(sum(X,2)~=0));
@@ -1978,7 +2047,6 @@ end
 
 %% Compassion x AFFECT   
 for behavioralaffect = 1
-    
     for figurec = 1
         keep1   = find((strcmp(groupN,'Affect')))
         keep2   = intersect(find(X(:,1) >-666), find(sum(X,2)~=0));
@@ -1988,7 +2056,7 @@ for behavioralaffect = 1
         mask    = mean(CT,1)>0.9;
         keep7   = find(compassion>0);
         keep7b  = find(abs(Comp)<666);
-        keep    = mintersect(keep1,keep2,keep4,keep7,keep7b, keep3);
+        keep    = mintersect(keep1,keep2,keep4, keep7,keep7b, keep3);
 
         size(keep)
         size(mintersect(keep, find(strcmp(groupN,'Affect')))) % N = 121
@@ -2028,11 +2096,11 @@ for behavioralaffect = 1
         
         f=figure,
         BoSurfStatViewData(slm.t,SInf,'')
-        SurfStatColLim([-3 3])
+        SurfStatColLim([1.69 3])
         colormap([0 0 0; mycol.blackblue])
         exportfigbo(f,[RPATH 'FIG3C.CMP_blank.png'],'png',10)
         cluscomp   = BoSurfStatPlotAllStatsNew(slm,SM, mask, 0.025, 0.025, [RPATH '/FIG3C.affect.comp.WB' ],1);
-        cluscomp   = BoSurfStatPlotAllStats(slm,SInf, mask, 0.025, 0.025, [RPATH '/FIG3C.affect.INF.comp.WB' ],1);
+        cluscomp   = BoSurfStatPlotAllStatsNew(slm,SInf, mask, 0.025, 0.025, [RPATH '/FIG3C.affect.INF.comp.WB' ],1);
         
         
         %% test for complex model with random effects
@@ -2170,6 +2238,201 @@ for behavioralaffect = 1
   
 end  
 
+%% Compassion x AFFECT INCL TC3  
+for behavioralaffect = 1
+    for figurec = 1
+        keep1   = find((strcmp(groupN,'Affect')))
+        keep2   = intersect(find(X(:,1) >-666), find(sum(X,2)~=0));
+        keep3   = find(abs(mean(X,2))<0.1);
+        keep4   = find(~(strcmp(group4,'Group3')));
+        size(mintersect(keep1,keep2,keep3, keep4)) % N = 126 (127)
+        mask    = mean(CT,1)>0.9;
+        keep7   = find(compassion>0);
+        keep7b  = find(abs(Comp)<666);
+        keep    = mintersect(keep1,keep2, keep7,keep7b, keep3);
+
+        size(keep)
+        size(mintersect(keep, find(strcmp(groupN,'Affect')))) % N = 121
+        
+        Ck      = X(keep,:);
+        ik      = id(keep,:);
+        ink     = idnum(keep);
+        tk      = tpnum(keep,:);
+        tnk     = tp(keep,:);
+        gk      = group(keep);
+        g4k     = group4(keep);
+        gNk     = groupN(keep);
+        ak      = age(keep);
+        sk      = sex(keep);
+        Compk   = (Comp(keep));
+        dk      = Days_last(keep);
+        combf   = (chcbl(keep));
+        A       = term(ak);
+        S       = term(sk);
+        G       = term(gk);
+        G4      = term(g4k);
+        GN      = term(gNk);
+        Sub     = term(ik);
+        CMP     = term(Compk);
+        T       = term(tk);
+        Tn      = term(tnk);
+        D       = term(dk);
+        
+        CHk   = mean(Ck,2);
+        CH    = term(CHk);
+        
+        Cbf   = term(combf);
+        
+        M       = 1 + CH + A + S + CMP + random(Sub) + I;
+        slm     = SurfStatLinModS(Ck,M,SW);
+        slm  	= SurfStatT(slm,(Compk));
+        
+        f=figure,
+        BoSurfStatViewData(slm.t,SInf,'')
+        SurfStatColLim([1.69 3])
+        colormap([0 0 0; mycol.blackblue])
+        exportfigbo(f,[RPATH 'FIG3C.CMP_blank.png'],'png',10)
+        cluscomp   = BoSurfStatPlotAllStatsNew(slm,SM, mask, 0.025, 0.025, [RPATH '/FIG3C.affect.comp.TC3.WB' ],1);
+        cluscomp   = BoSurfStatPlotAllStatsNew(slm,SInf, mask, 0.025, 0.025, [RPATH '/FIG3C.affect.INF.comp.TC3.WB' ],1);
+        
+        
+        %% test for complex model with random effects
+        numclus = sum(cluscomp.clus.P < 0.025);
+        for i = 1 : numclus
+            seedx       = mean(X(keep,cluscomp.clusid==i),2);
+            seedxt      = term(seedx);
+            
+            M2       = 1 + CH + A + S + GN + CMP + GN*CMP + Sub;
+            slm1 = SurfStatLinMod(seedx,M2);
+            slm1 = SurfStatT(slm1, (GN.Affect.*Compk));
+            disp([ 'ROI: ' num2str(j) ',t= ' num2str(slm1.t)])
+            
+            M3       = CH + A + S + (1 + CMP)*(1 + GN)*(1 + random(Sub)) + I;
+            slm1 = SurfStatLinModS(seedx,M3);
+            slm1 = SurfStatT(slm1, (GN.Affect.*Compk));
+            disp([ 'ROI: ' num2str(j) ',t= ' num2str(slm1.t)])
+            
+            % ROI: 1,t= 3.05
+            % ROI: 1,t= 2.04
+        end
+        
+        
+        
+        %which AAL?
+        numclus = sum(cluscomp.clus.P < 0.025);
+        for i = 1 : numclus
+            AAL2C2 = AAL(cluscomp.clusid==i);
+            unique(AAL2C2)
+            f= figure,
+            hist(AAL(cluscomp.clusid==i),unique(AAL(cluscomp.clusid==i)));
+            exportfigbo(f,[RPATH 'G2presence' num2str(i) '.png'],'png',10);
+            vertexid = find(cluscomp.t == max(cluscomp.t(cluscomp.clusid==i)));
+            aalnum = AAL(:,vertexid);
+            coordinate = SM.coord(:,vertexid)';
+            maxtval = max(cluscomp.t(cluscomp.clusid==i));
+            disp([ 't-val = ' num2str(maxtval) ' AAL: ' num2str(aalnum) ', coordinate: '  num2str(coordinate)])
+            %NEW
+            %     1    12    14    16    30
+            % t-val = 3.9006 AAL: 14, coordinate: 32.1758      22.3563      9.10549
+            
+        end
+        
+        numclus = sum(cluscomp.clus.P<0.025)
+        for j = [1 : numclus]
+            target = mean(Ck(:,find(cluscomp.clusid==j)),2);
+            M    = 1 + CH ;
+            slm = SurfStatLinMod(target,M);
+            targetresid(keep,:) = target - slm.X*slm.coef;
+            keepc1  = find(abs(Comp)<666);
+            keepp = find(strcmp(groupN,'Affect'));
+            keepc = mintersect(keep,keepc1,keepp);
+            f= figure,
+            hold on
+            scatter(Comp(keepc),targetresid(keepc),60,'Marker','o', 'MarkerFaceColor', [0.8 0 0], 'MarkerEdgeColor', [0 0 0]), lsline
+            %axis([-1.5 2.5 -0.65 0.4])
+            exportfigbo(f,[RPATH 'FIG3C.Comp.affect.scatter' num2str(j) '.png'],'png',10)
+            [r p] = corr(targetresid(keepc),Comp(keepc))
+            %r =0.23
+        end
+        
+        %% separate groups
+        numclus = sum(cluscomp.clus.P<0.025)
+        for j = [1 : numclus]
+            target = mean(Ck(:,find(cluscomp.clusid==j)),2);
+            M    = 1 + CH;
+            slm = SurfStatLinMod(target,M);
+            targetresid(keep,:) = target - slm.X*slm.coef;
+            keepc1  = find(abs(Comp)<666);
+            keepp = find(strcmp(groupN,'Affect'));
+            keepp2 = find(strcmp(group,'Group_1'));
+            keepc = mintersect(keep,keepc1,keepp,keepp2);
+            f= figure,
+            hold on
+            scatter(Comp(keepc),targetresid(keepc),60,'Marker','o', 'MarkerFaceColor', [0.8 0 0], 'MarkerEdgeColor', [0 0 0]), lsline
+            axis([-1.5 2.5 -0.2 0.2])
+            exportfigbo(f,[RPATH 'FIG3C.Comp.affect.scatter.G1.' num2str(j) '.png'],'png',10)
+            [r p] = corr(targetresid(keepc),Comp(keepc))
+            %r =0.31, p<0.02
+        end
+        
+        numclus = sum(cluscomp.clus.P<0.025)
+        for j = [1 : numclus]
+            target = mean(Ck(:,find(cluscomp.clusid==j)),2);
+            M    = 1 + CH;
+            slm = SurfStatLinMod(target,M);
+            targetresid(keep,:) = target - slm.X*slm.coef;
+            keepc1  = find(abs(Comp)<666);
+            keepp = find(strcmp(groupN,'Affect'));
+            keepp2 = find(strcmp(group,'Group_2'));
+            keepc = mintersect(keep,keepc1,keepp,keepp2);
+            f= figure,
+            hold on
+            scatter(Comp(keepc),targetresid(keepc),60,'Marker','o', 'MarkerFaceColor', [0.8 0 0], 'MarkerEdgeColor', [0 0 0]), lsline
+            axis([-1.5 2.5 -0.2 0.2])
+            exportfigbo(f,[RPATH 'FIG3C.Comp.affect.scatter.G2.' num2str(j) '.png'],'png',10)
+            [r p] = corr(targetresid(keepc),Comp(keepc))
+            %r =0.21
+        end
+        
+            %% compassion x affect
+    
+    comF3 = cluscomp.puncorr<0.025
+    f = figure,
+    BoSurfStatViewData(o_eempbin.*comF3, SInf,'')
+    exportfigbo(f,[RPATH 'ROI.com*aff.png'],'png',10);
+    
+    overlapF2 = o_eempbin.*comF3
+    AAL2C2 = AAL(find(overlapF2>0));
+    unique(AAL2C2)
+    f= figure,
+    hist(AAL(find(overlapF2>0)),unique(AAL(find(overlapF2>0))));
+    % 30, 14, 16, (1), 34, 29, 68
+
+    end
+    
+    %% training
+    
+    bodyk = (zscore(hearth.count_perday(keep,:))+zscore(adyad.count_perday(keep,:)))./2;
+    bodyk = zscore(hearth.count_perday(keep,:))
+    bt    = term(bodyk);
+    
+    M       = 1 + CH + A + S + bt + random(Sub) + I;
+    slm     = SurfStatLinModS(Ck,M,SW);
+    slm  	= SurfStatT(slm,(bodyk));
+      
+    f=figure,
+    BoSurfStatViewData(slm.t,SInf,'')
+    SurfStatColLim([-3 3])
+    colormap([0 0 0; mycol.blackblue])
+    %exportfigbo(f,[RPATH 'ATT_mod.png'],'png',10)
+    clusatt    = BoSurfStatPlotAllStats(slm,SM, mask, 0.025, 0.05, [RPATH '/FIG1C.affect.hearth.cpd.WB' ],1);
+
+
+  
+end  
+
+
+
 %%  ToM x PERSPECTIVE
 for behavioralperspective = 1
     
@@ -2217,13 +2480,14 @@ for behavioralperspective = 1
         CHk      = mean(Ck,2);
         CH      = term(CHk);
         
-        Hk    = Hear(keep);
-        H     = term(Hk);
-        
         Tbf  = term(Tombfk);
         
         D = term(dk);
         
+%         M3       = CH + A + S + (1 + TO)*(1 + random(Sub)) + I;
+%         slm     = SurfStatLinModS(Ck,M3,SW);
+%         slm  	= SurfStatT(slm,(Tomk));
+  
         
         M       = 1 + CH + A + S + TO + random(Sub) + I;
         slm     = SurfStatLinModS(Ck,M,SW);
@@ -2799,9 +3063,9 @@ for FIG12 = 1
     M       = 1  + CH + A + S + G4 + DT + G4*DT + random(Sub) + I;
     slm = SurfStatLinModS(Ck,M,SW);
     
-    %% perspective - affect controlled for presence
-    contrast = ((G4.Group3.* DT.T1)-(G4.Group3.* DT.T0)) - ((G4.Group_1.* DT.T1)-(G4.Group_1.* DT.T0)) ...
-        - ((G4.Group_2.* DT.T1)-(G4.Group_2.* DT.T0))
+    %% active affect minus presence
+    contrast = (((G4.Group3.* DT.T1)-(G4.Group3.* DT.T0)) - (((G4.Group_1.* DT.T1)-(G4.Group_1.* DT.T0)) ...
+        + ((G4.Group_2.* DT.T1)-(G4.Group_2.* DT.T0))))
     % FIGURE2A -- TC2 - TC2
     slm  	= SurfStatT(slm,contrast);
     perspectiveF2.stats   = BoSurfStatPlotAllStats(slm, SM, mask, p_thresh, 0.025, ...
@@ -2818,23 +3082,11 @@ for FIG12 = 1
         M2       = 1 + CH + A + S + G4 + DT + G4*DT + Sub;
         slm1 = SurfStatLinModS(seedx,M2);
         slm1 = SurfStatT(slm1, contrast);
-        disp([ 'ROI: ' num2str(j) ',t= ' num2str(slm1.t)])
-% ROI: 1,t= 4.0308
-% ROI: 1,t= 4.4525
-% ROI: 1,t= 3.7377
-% ROI: 1,t= 3.5254
-%         M3       = CH + A + S + (1 + G4)*(1 + DT)*(1 + random(Sub)) + I;
-%         slm1 = SurfStatLinMod(seedx,M3);
-%         slm1 = SurfStatT(slm1, contrast);
-%         disp([ 'ROI: ' num2str(j) ',t= ' num2str(slm1.t)])
+        disp([ 'ROI: ' num2str(i) ',t= ' num2str(slm1.t)])
+%         ROI: 1,t= 4.9956
+%         ROI: 2,t= 4.8682
+%         ROI: 3,t= 4.9732
     end
-    
-    %% AAL
-%     AAL2C2 = AAL(perspectiveF2.stats.clusid==3);
-%     unique(AAL2C2)
-%     f= figure,
-%     hist(AAL(perspectiveF2.stats.clusid==1),unique(AAL(perspectiveF2.stats.clusid==1)))
-%     exportfigbo(f,[RPATH 'F2BperspectiveAAL' num2str(i) '.png'],'png',10)
     
     numclus = sum(perspectiveF2.stats.clus.P < 0.025);
     for i = 1 : numclus
@@ -2845,1176 +3097,59 @@ for FIG12 = 1
         AAL2C2 = AAL(perspectiveF2.stats.clusid==i);
         unique(AAL2C2)
         disp([ 't-val = ' num2str(maxtval) ' AAL: ' num2str(aalnum) ', coordinate: '  num2str(coordinate)])
-%         0    81    85    89
-%         t-val = 3.6348 AAL: 85, coordinate: -52.8215     -48.3212      3.25627
-%         0    43    44    46    48    50
-%         t-val = 3.1379 AAL: 48, coordinate: 10.4429     -84.4072     -13.6755
-%         0    43    45    47    49    51
-%         t-val = 3.0483 AAL: 43, coordinate: -10.8362     -86.9299      7.04825
 
-%NEW
-%      1    81    85    89
-% t-val = 3.6375 AAL: 85, coordinate: -51.2848     -43.3906     0.232559
-%      1    82    86    90
-% t-val = 4.0353 AAL: 86, coordinate: 65.302     -42.8761     -8.28508 
-%      1    43    44    46    48    50
-% t-val = 3.0493 AAL: 48, coordinate: 10.4429     -84.4072     -13.6755
-%      1    43    45    47    49    51
-% t-val = 3.0419 AAL: 43, coordinate: -10.8362     -86.9299      7.04825
+%         1    43    45    47    49    51    53    67
+%         t-val = 4.4938 AAL: 43, coordinate: -11.083     -66.9468      12.0117
+%         1     2     8    12    18    58    62    64    82
+%         t-val = 4.8431 AAL: 64, coordinate: 59.3674     -23.2183       31.263
+%         40    43    44    46    48
+%         t-val = 4.2852 AAL: 46, coordinate: 3.75859     -70.3374       19.071
     end
       
-    % cluster significance
-    % cohens D:
-    numclus = sum(perspectiveF2.stats.clus.P<0.025)
-    for i = 1:numclus
-        ROI = mean(CT(keep,perspectiveF2.stats.clusid==i),2);
-        slm      = SurfStatLinMod(ROI,M);
-        slm      = SurfStatT(slm,contrast); 
-        disp('*******************************************************')
-        disp(['Post-hoc Clus: ' num2str(i)]) 
-        disp([ 't-val ' num2str(slm.t)])   
-        d = 2*(slm.t) / sqrt(slm.df);
-        disp([ 'Cohen d ' num2str(d)])
-        disp([ 'cluster sig ' num2str(perspectiveF2.stats.clus.P(i))])
-% *******************************************************
-% Post-hoc Clus: 1
-% t-val 3.9723
-% Cohen d 0.30006
-% cluster sig 3.0145e-05
-% *******************************************************
-% Post-hoc Clus: 2
-% t-val 4.3946
-% Cohen d 0.33196
-% cluster sig 0.00032642
-% *******************************************************
-% Post-hoc Clus: 3
-% t-val 3.7023
-% Cohen d 0.27967
-% cluster sig 0.00039396
-% *******************************************************
-% Post-hoc Clus: 4
-% t-val 3.515
-% Cohen d 0.26552
-% cluster sig 0.0011375
-    end
-    
-     %% affect -perspective controlled for presence
-    contrast = (((G4.Group_1.* DT.T2)-(G4.Group_1.* DT.T1)) + ((G4.Group_2.* DT.T3)-(G4.Group_2.* DT.T2))) - ...
-        (((G4.Group_2.* DT.T2)-(G4.Group_2.* DT.T1)) + ((G4.Group_1.* DT.T3)-(G4.Group_1.* DT.T2))) - ...
-            (((G4.Group_1.* DT.T1)-(G4.Group_1.* DT.T0)) + ((G4.Group_1.* DT.T1)-(G4.Group_2.* DT.T0)))
+    %% presence minus active affect
+    contrast = ((((G4.Group_1.* DT.T1)-(G4.Group_1.* DT.T0)) + ((G4.Group_2.* DT.T1)-(G4.Group_2.* DT.T0)))...
+        -((G4.Group3.* DT.T1)-(G4.Group3.* DT.T0)))
+    % FIGURE2A -- TC2 - TC2
     slm  	= SurfStatT(slm,contrast);
-    affectiveF2.stats   = BoSurfStatPlotAllStats(slm, SM, mask, p_thresh, 0.025, ...
-        [RPATH 'FIGURE2A.CT.affect-perspective.b.FAC.M3.days.'],1);
-    affectiveF2.stats   = BoSurfStatPlotAllStats(slm, SInf, mask, p_thresh, 0.025, ...
-        [RPATH 'FIGURE2A.CT.INF.affect-perspective.b.FAC.days.'],1);
-   
-    %% test for complex model with random effects
-    numclus = sum(affectiveF2.stats.clus.P < 0.025);
+    perspectiveF2.stats   = BoSurfStatPlotAllStats(slm, SM, mask, p_thresh, 0.025, ...
+        [RPATH 'FIGURE2A.CT.TC12-TC3.FAC.days.M3.'],1);
+    perspectiveF2.stats   = BoSurfStatPlotAllStats(slm, SInf, mask, p_thresh, 0.025, ...
+        [RPATH 'FIGURE2A.CT.inf.TC12-TC3.FAC.days.'],1);
+    
+    %% test for complex model with random effects // FIXED effects
+    numclus = sum(perspectiveF2.stats.clus.P < 0.025);
     for i = 1 : numclus
-        seedx       = mean(CT(keep,affectiveF2.stats.clusid==i),2);
+        seedx       = mean(CT(keep,perspectiveF2.stats.clusid==i),2);
         seedxt      = term(seedx);
         
         M2       = 1 + CH + A + S + G4 + DT + G4*DT + Sub;
-        slm1 = SurfStatLinMod(seedx,M2);
+        slm1 = SurfStatLinModS(seedx,M2);
         slm1 = SurfStatT(slm1, contrast);
         disp([ 'ROI: ' num2str(j) ',t= ' num2str(slm1.t)])
-% ROI: 1,t= 5.6359
-% ROI: 1,t= 4.1286
-% ROI: 1,t= 3.7002
-% ROI: 1,t= 3.1319
+%         ROI: 113,t= 5.9028
+%         ROI: 113,t= 3.7577
+%         ROI: 113,t= 3.4029
     end
     
-    %% AAL
-    numclus = sum(affectiveF2.stats.clus.P < 0.025);
+    numclus = sum(perspectiveF2.stats.clus.P < 0.025);
     for i = 1 : numclus
-        vertexid = find(affectiveF2.stats.t == max(affectiveF2.stats.t(affectiveF2.stats.clusid==i)));
+        vertexid = find(perspectiveF2.stats.t == max(perspectiveF2.stats.t(perspectiveF2.stats.clusid==i)));
         aalnum = AAL(:,vertexid);
         coordinate = SM.coord(:,vertexid)';
-        maxtval = max(affectiveF2.stats.t(affectiveF2.stats.clusid==i));
-        AAL2C2 = AAL(affectiveF2.stats.clusid==i);
+        maxtval = max(perspectiveF2.stats.t(perspectiveF2.stats.clusid==i));
+        AAL2C2 = AAL(perspectiveF2.stats.clusid==i);
         unique(AAL2C2)
         disp([ 't-val = ' num2str(maxtval) ' AAL: ' num2str(aalnum) ', coordinate: '  num2str(coordinate)])
-%         2     8    12    18    58
-%         t-val = 3.9387 AAL: 2, coordinate: 44.9294       1.0018      46.7104
-%         8    12    14    16    18
-%         t-val = 4.1148 AAL: 14, coordinate: 54.2935       29.129      2.25135
-%         64    82
-%         t-val = 2.8816 AAL: 82, coordinate: 64.0045     -33.1973      16.0255
-%         0    33    35    67    69
-%         t-val = 3.4546 AAL: 33, coordinate: -7.97467     -40.1174      38.1422
-%         0    61    63    65    85
-%         t-val = 3.2721 AAL: 61, coordinate: -51.5047     -50.0944      36.4772
 
-%NEW
-%      1     2     8    12    14    16    18    30    58    64
-% t-val = 4.1065 AAL: 14, coordinate: 53.3627      27.3439       1.9629
-%      1    33    35    67    69
-% t-val = 3.4612 AAL: 33, coordinate: -7.97467     -40.1174      38.1422
-%      1    61    63    65    85
-% t-val = 3.3241 AAL: 61, coordinate: -51.5047     -50.0944      36.4772
-%      1    51    53    55    85    89
-% t-val = 2.9988 AAL: 85, coordinate: -63.1341     -38.1133      -14.029
-    end
-    
-
-      
-    % cluster significance
-    % cohens D:
-    numclus = sum(affectiveF2.stats.clus.P<0.025)
-    for i = 1:numclus
-        ROI = mean(CT(keep,affectiveF2.stats.clusid==i),2);
-        slm1      = SurfStatLinMod(ROI,M);
-        slm1      = SurfStatT(slm1,contrast); 
-        disp('*******************************************************')
-        disp(['Post-hoc Clus: ' num2str(i)]) 
-        disp([ 't-val ' num2str(slm1.t)])   
-        d = 2*(slm1.t) / sqrt(slm1.df);
-        disp([ 'Cohen d ' num2str(d)])
-        disp([ 'cluster sig ' num2str(affectiveF2.stats.clus.P(i))])
-% *******************************************************
-% Post-hoc Clus: 1
-% t-val 5.5822
-% Cohen d 0.42167
-% cluster sig 1.2376e-06
-% *******************************************************
-% Post-hoc Clus: 2
-% t-val 4.1021
-% Cohen d 0.30987
-% cluster sig 0.0033708
-% *******************************************************
-% Post-hoc Clus: 3
-% t-val 3.632
-% Cohen d 0.27436
-% cluster sig 0.013331
-% *******************************************************
-% Post-hoc Clus: 4
-% t-val 3.1256
-% Cohen d 0.2361
-% cluster sig 0.018762
-    end
-    
-    
-    %% To-T2 
-    contrast = ((G4.Group_1.* DT.T2)-(G4.Group_1.* DT.T0)) - ((G4.Group_2.* DT.T2)-(G4.Group_2.* DT.T0)) 
-    slm  	= SurfStatT(slm,contrast);
-    T2T0stats   = BoSurfStatPlotAllStatsNew(slm, SM, mask, p_thresh, 0.025, ...
-        [RPATH 'FIGURE2A.CT.T2-T0.affect-perspective.FAC.days.'],1);
-     T2T0stats   = BoSurfStatPlotAllStatsNew(slm, SInf, mask, p_thresh, 0.025, ...
-        [RPATH 'FIGURE2A.CT.INF.T2-T0.affect-perspective.FAC.days.'],1);
-    F2C_stats = stats;
-    
-     %% test for complex model with random effects
-    numclus = sum(T2T0stats.clus.P < 0.025);
-    for i = 1 : numclus
-        seedx       = mean(CT(keep,T2T0stats.clusid==i),2);
-        seedxt      = term(seedx);
-        
-        M2       = 1 + CH + A + S + G4 + DT + G4*DT + Sub;
-        slm1 = SurfStatLinMod(seedx,M2);
-        slm1 = SurfStatT(slm1, contrast);
-        disp([ 'ROI: ' num2str(j) ',t= ' num2str(slm1.t)])
-% ROI: 1,t= 3.9804
-% ROI: 1,t= 4.2322
-    end
-    
-    %% test for complex model with random effects
-    numclus = sum(T2T0stats.inv_clus.P < 0.025);
-    for i = 1 : numclus
-        seedx       = mean(CT(keep,T2T0stats.inv_clusid==i),2);
-        seedxt      = term(seedx);
-        
-        M2       = 1 + CH + A + S + G4 + DT + G4*DT + Sub;
-        slm1 = SurfStatLinMod(seedx,M2);
-        slm1 = SurfStatT(slm1, contrast);
-        disp([ 'ROI: ' num2str(j) ',t= ' num2str(slm1.t)])
-% ROI: 1,t= -4.7594
-% ROI: 1,t= -4.7681
-    end
-    
-    
-    %% Affect - perspective
-    numclus = sum(T2T0stats.clus.P < 0.025);
-    for i = 1 : numclus
-        vertexid = find(T2T0stats.t == max(T2T0stats.t(T2T0stats.clusid==i)));
-        aalnum = AAL(:,vertexid);
-        coordinate = SM.coord(:,vertexid)';
-        maxtval = max(T2T0stats.t(T2T0stats.clusid==i));
-        AAL2C2 = AAL(T2T0stats.clusid==i);
-        unique(AAL2C2)
-        disp([ 't-val = ' num2str(maxtval) ' AAL: ' num2str(aalnum) ', coordinate: '  num2str(coordinate)])
-%         0     3     7    13    19    23    31    33
-%         t-val = 3.7661 AAL: 23, coordinate: -12.0624      36.2348      22.4073
-%         0    19    33    67    69
-%         t-val = 3.4457 AAL: 33, coordinate: -11.2437     -3.47004       43.516
-%         0    12    14    18    30
-%         t-val = 3.6728 AAL: 12, coordinate: 41.2897      5.83642      8.57816
-
-%NEW
-
-%      1     3     7    13    19    23    31    33
-% t-val = 3.8197 AAL: 23, coordinate: -12.0624      36.2348      22.4073
-%      1    19    33    67    69
-% t-val = 3.4648 AAL: 33, coordinate: -11.2437     -3.47004       43.516
+%         1     4     6     8    10    14    16    20    24    26    28    32    34
+%         t-val = 4.6753 AAL: 26, coordinate: 13.8703      58.5991     -10.4165
+%         1    48    52    54    56    86    90
+%         t-val = 3.7479 AAL: 54, coordinate: 34.7116      -81.378     -14.4165
+%         47    51    53    55
+%         t-val = 3.5267 AAL: 51, coordinate: -36.4558     -86.2341     -1.99416
     end
       
-    % cluster significance
-    % cohens D:
-    numclus = sum(T2T0stats.clus.P<0.025)
-    for i = 1:numclus
-        ROI = mean(CT(keep,T2T0stats.clusid==i),2);
-        slma      = SurfStatLinMod(ROI,M);
-        slma      = SurfStatT(slma,contrast); 
-        disp('*******************************************************')
-        disp(['Post-hoc Clus: ' num2str(i)]) 
-        disp([ 't-val ' num2str(slma.t)])   
-        d = 2*(slma.t) / sqrt(slma.df);
-        disp([ 'Cohen d ' num2str(d)])
-        disp([ 'cluster sig ' num2str(T2T0stats.clus.P(i))])
-%         *******************************************************
-%         Post-hoc Clus: 1
-%         t-val 4.012
-%         Cohen d 0.30306
-%         cluster sig 4.3115e-06
-%         *******************************************************
-%         Post-hoc Clus: 2
-%         t-val 4.2546
-%         Cohen d 0.32139
-%         cluster sig 0.006329
-    end
-    
-    %% Perspective - affect
-    numclus = sum(T2T0stats.inv_clus.P < 0.025);
-    for i = 1 : numclus
-        vertexid = find(T2T0stats.inv_t == max(T2T0stats.inv_t(T2T0stats.inv_clusid==i)));
-        aalnum = AAL(:,vertexid);
-        coordinate = SM.coord(:,vertexid)';
-        maxtval = max(T2T0stats.inv_t(T2T0stats.inv_clusid==i));
-        AAL2C2 = AAL(T2T0stats.inv_clusid==i);
-        unique(AAL2C2)
-        disp([ 't-val = ' num2str(maxtval) ' AAL: ' num2str(aalnum) ', coordinate: '  num2str(coordinate)])
-%         0    17    57    61    63    65    81    85    89
-%         t-val = 4.1983 AAL: 85, coordinate: -52.8215     -48.3212      3.25627
-%         0    82    84    86    88    90
-%         t-val = 3.9859 AAL: 82, coordinate: 52.2421     -7.97336     -15.1101
-% NEW
-
-% 1    17    57    61    63    65    81    85    89
-% t-val = 4.2654 AAL: 81, coordinate: -64.3335     -39.6449        13.92
-% 1    82    84    86    88    90
-% t-val = 4.9318 AAL: 86, coordinate: 56.1768     -16.6383     -15.5999
-    end
-      
-    % cluster significance
-    % cohens D:
-    numclus = sum(T2T0stats.inv_clus.P<0.025)
-    for i = 1:numclus
-        ROI = mean(CT(keep,T2T0stats.inv_clusid==i),2);
-        slma      = SurfStatLinMod(ROI,M);
-        slma      = SurfStatT(slma,contrast); 
-        disp('*******************************************************')
-        disp(['Post-hoc Clus: ' num2str(i)]) 
-        disp([ 't-val ' num2str(slma.t)])   
-        d = 2*(slma.t) / sqrt(slma.df);
-        disp([ 'Cohen d ' num2str(d)])
-        disp([ 'cluster sig ' num2str(T2T0stats.inv_clus.P(i))])
-% *******************************************************
-% Post-hoc Clus: 1
-% t-val -4.7749
-% Cohen d -0.36069
-% cluster sig 1.2528e-06
-% *******************************************************
-% Post-hoc Clus: 2
-% t-val -4.7491
-% Cohen d -0.35874
-% cluster sig 4.8931e-05
-    end
-    
-    
-    %% PRESENCE G2
-    
-    contrast = ((((G4.Group_2.* DT.T1)-(G4.Group_2.* DT.T0)) - ((G4.Control.* DT.T1)-(G4.Control.* DT.T0))))    
-    slm  	= SurfStatT(slm,contrast);
-    statsG2   = BoSurfStatPlotAllStatsNew(slm, SM, mask, p_thresh, 0.025, ...
-        [RPATH 'FIGURE2A.CT.G2.presence-control.T0T1.FAC.days.'],1);
    
-        %% post-hoc 
-    % cluster significance
-    % cohens D:
-    numclus = sum(statsG2.clus.P<0.025)
-    for i = 1:numclus
-        ROI = mean(CT(keep,statsG2.clusid==i),2);
-        slma      = SurfStatLinMod(ROI,M);
-        slma      = SurfStatT(slma,contrast); 
-        disp('*******************************************************')
-        disp(['Post-hoc Clus: ' num2str(i)]) 
-        disp([ 't-val ' num2str(slma.t)])   
-        d = 2*(slma.t) / sqrt(slma.df);
-        disp([ 'Cohen d ' num2str(d)])
-        disp([ 'cluster sig ' num2str(statsG2.clus.P(i))])
-% *******************************************************
-% Post-hoc Clus: 1
-% t-val 5.258
-% Cohen d 0.39718
-% cluster sig 1.2528e-06
-    end
-    
-    numclus = sum(statsG2.inv_clus.P<0.025)
-    for i = 1:numclus
-        ROI = mean(CT(keep,statsG2.inv_clusid==i),2);
-        slma      = SurfStatLinMod(ROI,M);
-        slma      = SurfStatT(slma,contrast); 
-        disp('*******************************************************')
-        disp(['Post-hoc Clus: ' num2str(i)]) 
-        disp([ 't-val ' num2str(slma.t)])   
-        d = 2*(slma.t) / sqrt(slma.df);
-        disp([ 'Cohen d ' num2str(d)])
-        disp([ 'cluster sig ' num2str(statsG2.inv_clus.P(i))])
-% *******************************************************
-% Post-hoc Clus: 1
-% t-val -4.981
-% Cohen d -0.37626
-% cluster sig 1.2667e-06
-% *******************************************************
-% Post-hoc Clus: 2
-% t-val -3.6343
-% Cohen d -0.27453
-% cluster sig 0.0050648
-% *******************************************************
-% Post-hoc Clus: 3
-% t-val -3.5126
-% Cohen d -0.26534
-% cluster sig 0.009902
-    end
-    
-    numclus = sum(statsG2.clus.P < 0.025);
-    for i = 1 : numclus
-        AAL2C2 = AAL(statsG2.clusid==i);
-        unique(AAL2C2)
-        %f= figure,
-        %hist(AAL(statsG2.clusid==i),unique(AAL(statsG2.clusid==i)));
-        %exportfigbo(f,[RPATH 'G2presence' num2str(i) '.png'],'png',10);
-        vertexid = find(statsG2.t == max(statsG2.t(statsG2.clusid==i)));
-        aalnum = AAL(:,vertexid);
-        coordinate = SM.coord(:,vertexid)';
-        maxtval = max(statsG2.t(statsG2.clusid==i));
-        disp([ 't-val = ' num2str(maxtval) ' AAL: ' num2str(aalnum) ', coordinate: '  num2str(coordinate)]) 
-%         0     4     6     8    10    14    16    20    24    26    28    32    34
-%         t-val = 4.659 AAL: 16, coordinate: 44.6538      48.6399     -7.64978
-
-%NEW
-%      1     4     6     8    10    14    16    20    24    26    28    32    34
-% t-val = 4.6543 AAL: 16, coordinate: 44.6538      48.6399     -7.64978
-    end
-    
-    numclus = sum(statsG2.inv_clus.P < 0.025);
-    for i = 1 : numclus
-        AAL2C2 = AAL(statsG2.inv_clusid==i);
-        unique(AAL2C2)
-        %f= figure,
-        %hist(AAL(statsG2.inv_clusid==i),unique(AAL(statsG2.inv_clusid==i)));
-        %exportfigbo(f,[RPATH 'G2presenceN' num2str(i) '.png'],'png',10);
-        vertexid = find(statsG2.inv_t == max(statsG2.inv_t(statsG2.inv_clusid==i)));
-        aalnum = AAL(:,vertexid);
-        coordinate = SM.coord(:,vertexid)';
-        maxtval = max(statsG2.inv_t(statsG2.inv_clusid==i));
-        disp([ 't-val = ' num2str(maxtval) ' AAL: ' num2str(aalnum) ', coordinate: '  num2str(coordinate)])
-%         40    44    46    48    68
-%         t-val = 4.3499 AAL: 44, coordinate: 15.6613     -56.3666      8.03368
-%         0    18    30    64    82
-%         t-val = 3.4321 AAL: 64, coordinate: 59.5053     -36.5102      23.0216
-%         7     9    13    15
-%         t-val = 3.545 AAL: 13, coordinate: -40.1846      29.9264      13.0839
-
-%NEW
-%     40    44    46    48    68
-% t-val = 4.3292 AAL: 44, coordinate: 15.6613     -56.3666      8.03368
-%      1    18    30    64    80    82
-% t-val = 3.4476 AAL: 64, coordinate: 59.5053     -36.5102      23.0216
-%      7     9    13    15
-% t-val = 3.571 AAL: 13, coordinate: -40.1846      29.9264      13.0839
-
-    end
-    
-    contrast = ((((G4.Group_1.* DT.T1)-(G4.Group_1.* DT.T0)) - ((G4.Control.* DT.T1)-(G4.Control.* DT.T0)))) 
-    
-    slm  	= SurfStatT(slm,contrast);
-    statsG1   = BoSurfStatPlotAllStatsNew(slm, SM, mask, p_thresh, 0.025, ...
-        [RPATH 'FIGURE2A.CT.G1.presence-control.T0T1.FAC.days.'],1);
-    
-    %% post-hoc 
-    % cluster significance
-    % cohens D:
-    numclus = sum(statsG1.clus.P<0.025)
-    for i = 1:numclus
-        ROI = mean(CT(keep,statsG1.clusid==i),2);
-        slma      = SurfStatLinMod(ROI,M);
-        slma      = SurfStatT(slma,contrast); 
-        disp('*******************************************************')
-        disp(['Post-hoc Clus: ' num2str(i)]) 
-        disp([ 't-val ' num2str(slma.t)])   
-        d = 2*(slma.t) / sqrt(slma.df);
-        disp([ 'Cohen d ' num2str(d)])
-        disp([ 'cluster sig ' num2str(statsG1.clus.P(i))])
-% *******************************************************
-% Post-hoc Clus: 1
-% t-val 6.2705
-% Cohen d 0.47367
-% cluster sig 1.2528e-06
-% *******************************************************
-% Post-hoc Clus: 2
-% t-val 6.3206
-% Cohen d 0.47745
-% cluster sig 1.2528e-06
-    end
-    
-    numclus = sum(statsG1.inv_clus.P<0.025)
-    for i = 1:numclus
-        ROI = mean(CT(keep,statsG1.inv_clusid==i),2);
-        slma      = SurfStatLinMod(ROI,M);
-        slma      = SurfStatT(slma,contrast); 
-        disp('*******************************************************')
-        disp(['Post-hoc Clus: ' num2str(i)]) 
-        disp([ 't-val ' num2str(slma.t)])   
-        d = 2*(slma.t) / sqrt(slma.df);
-        disp([ 'Cohen d ' num2str(d)])
-        disp([ 'cluster sig ' num2str(statsG1.inv_clus.P(i))])
-% *******************************************************
-% Post-hoc Clus: 1
-% t-val -6.134
-% Cohen d -0.46335
-% cluster sig 1.2528e-06
-% *******************************************************
-% Post-hoc Clus: 2
-% t-val -5.363
-% Cohen d -0.40511
-% cluster sig 1.2528e-06
-% *******************************************************
-% Post-hoc Clus: 3
-% t-val -5.6242
-% Cohen d -0.42484
-% cluster sig 1.2529e-06
-% *******************************************************
-% Post-hoc Clus: 4
-% t-val -4.406
-% Cohen d -0.33283
-% cluster sig 5.5894e-05
-% *******************************************************
-% Post-hoc Clus: 5
-% t-val -4.066
-% Cohen d -0.30714
-% cluster sig 0.020707
-    end
-    
-    numclus = sum(statsG1.clus.P < 0.025);
-    for i = 1 : numclus
-        AAL2C2 = AAL(statsG1.clusid==i);
-        unique(AAL2C2)
-        vertexid = find(statsG1.t == max(statsG1.t(statsG1.clusid==i)));
-        aalnum = AAL(:,vertexid);
-        coordinate = SM.coord(:,vertexid)';
-        maxtval = max(statsG1.t(statsG1.clusid==i));
-        disp([ 't-val = ' num2str(maxtval) ' AAL: ' num2str(aalnum) ', coordinate: '  num2str(coordinate)])
-%         0     3     5     7     9    11    13    15    19    23    25    27    29    31    33
-%         t-val = 4.9987 AAL: 3, coordinate: -15.1788      49.6029       36.329
-%         0     4     6     8    10    16    20    24    26    28    32    34
-%         t-val = 4.9618 AAL: 24, coordinate: 6.19002      27.0555      58.8839
-
-%NEW
-
-%      1     3     5     7     9    11    13    15    19    23    25    27    29    31    33
-% t-val = 5.0196 AAL: 3, coordinate: -15.1788      49.6029       36.329
-%      1     4     6     8    10    16    20    24    26    28    32    34    68
-% t-val = 5.072 AAL: 24, coordinate: 6.19002      27.0555      58.8839
-    end
-    
-    numclus = sum(statsG1.inv_clus.P < 0.025);
-    for i = 1 : numclus
-        AAL2C2 = AAL(statsG1.inv_clusid==i);
-        unique(AAL2C2)
-        f= figure,
-        hist(AAL(statsG1.inv_clusid==i),unique(AAL(statsG1.inv_clusid==i)));
-        exportfigbo(f,[RPATH 'G2presenceN' num2str(i) '.png'],'png',10);
-        vertexid = find(statsG1.inv_t == max(statsG1.inv_t(statsG1.inv_clusid==i)));
-        aalnum = AAL(:,vertexid);
-        coordinate = SM.coord(:,vertexid)';
-        maxtval = max(statsG1.inv_t(statsG1.inv_clusid==i));
-        disp([ 't-val = ' num2str(maxtval) ' AAL: ' num2str(aalnum) ', coordinate: '  num2str(coordinate)])
-%         0    51    53    55    57    61    63    65    81    85    89
-%         t-val = 5.3851 AAL: 85, coordinate: -56.267     -45.6577     -12.1994
-%         0    82    86    88    90
-%         t-val = 4.0975 AAL: 86, coordinate: 60.0739     0.359326     -26.7405
-%         0    40    43    44    46    48    50    52    54    68
-%         t-val = 4.0536 AAL: 44, coordinate: 7.81859     -96.7332      7.14824
-%         2    12    14    18    58
-%         t-val = 3.3807 AAL: 18, coordinate: 60.3209      3.89001      12.8612
-%         64    66    82
-%         t-val = 3.1803 AAL: 64, coordinate: 62.7818     -41.4796       22.412
-
-%NEW
-%      1    51    53    55    57    61    63    65    81    85    89
-% t-val = 5.3919 AAL: 85, coordinate: -56.267     -45.6577     -12.1994
-%      1    40    43    44    46    48    50    52    54    68
-% t-val = 4.057 AAL: 44, coordinate: 7.81859     -96.7332      7.14824
-%      1    64    66    82    84    86    88    90
-% t-val = 4.3105 AAL: 86, coordinate: 57.2689     -2.11664     -31.0907
-%      2    12    14    18    58    64
-% t-val = 3.6607 AAL: 64, coordinate: 58.8944     -21.1868      27.0442
-%      1    43    45    47    49    51    53
-% t-val = 4.1444 AAL: 51, coordinate: -16.61529     -100.7017       4.65367
-    end
-    
-    
-    contrast = ((((G4.Group_1.* DT.T1)-(G4.Group_1.* DT.T0)) + ((G4.Group_2.* DT.T1)-(G4.Group_2.* DT.T0))) ...
-        - ((G4.Control.* DT.T1)-(G4.Control.* DT.T0))) 
-    
-    slm  	= SurfStatT(slm,contrast);
-    statsG1   = BoSurfStatPlotAllStatsNew(slm, SM, mask, p_thresh, 0.025, ...
-        [RPATH 'FIGURE2A.CT.presence-control.T0T1.FAC.days.'],1);
-  
-    
-    
-    
-    inter_tval = (statsG1.t) .* (statsG2.t)
-    inter_len = (statsG1.p<p_thresh) .* (statsG2.p<p_thresh)
-    f=figure;
-    BoSurfStatViewData(double(inter_len>0),SInf,'');
-    colormap([0 0 0; 1 0 0])
-    exportfigbo(f,[RPATH 'FIGURE1.intersect_TC1-RCC_and_TC2-RCC_len.png'],'png',10);
-    
-    inter_neg_len = (statsG1.inv_p<p_thresh) .* (statsG2.inv_p<p_thresh)
-    f=figure;
-    BoSurfStatViewData(double(inter_neg_len>0),SInf,'');
-    colormap([0 0 0; 0 0 1])
-    exportfigbo(f,[RPATH 'FIGURE1.intersect_TC1-RCC_and_TC2-RCC_invlen.png'],'png',10);
-   
-    % FIGURE1F -- OVERLAP
-    inter_str = (statsG1.pval.C<pwe) .* (statsG2.pval.C<pwe)
-    f=figure;
-    BoSurfStatViewData(double(inter_str>0),SM,'');
-    colormap([0 0 0; 1 0 0])
-    exportfigbo(f,[RPATH 'FIGURE1.intersect_TC1-RCC_and_TC2-RCC_str.png'],'png',10);
-    
-    inter_neg_str = (statsG1.inv_pval.C<pwe) .* (statsG2.inv_pval.C<pwe)
-    f=figure;
-    BoSurfStatViewData(double(inter_neg_str>0),SM,'');
-    colormap([0 0 0; 0 0 1])
-    exportfigbo(f,[RPATH 'FIGURE1.intersect_TC1-RCC_and_TC2-RCC_invstr.png'],'png',10);
-   
-    %% S1: T1_T2: 
-    
-    contrast = ((((G4.Group_2.* DT.T2)-(G4.Group_2.* DT.T1)) - ((G4.Group_1.* DT.T2)-(G4.Group_1.* DT.T1)))) - ...
-        ((G4.Group_2.* DT.T1)-(G4.Group_2.* DT.T0)) - ((G4.Group_1.* DT.T1)-(G4.Group_1.* DT.T0))
-    
-    slm  	= SurfStatT(slm,contrast);
-    statsG2G1_T21   = BoSurfStatPlotAllStats(slm, SM, mask, p_thresh, 0.025, ...
-        [RPATH 'FIGURE2A.CT.G2-G1.T1T2+.FAC.days.'],1);
-  
-    numclus = sum(statsG2G1_T21.clus.P<0.025)
-    for i = 1:numclus
-        ROI = mean(CT(keep,statsG2G1_T21.clusid==i),2);
-        slma      = SurfStatLinMod(ROI,M);
-        slma      = SurfStatT(slma,contrast); 
-        disp('*******************************************************')
-        disp(['Post-hoc Clus: ' num2str(i)]) 
-        disp([ 't-val ' num2str(slma.t)])   
-        d = 2*(slma.t) / sqrt(slma.df);
-        disp([ 'Cohen d ' num2str(d)])
-        disp([ 'cluster sig ' num2str(statsG2G1_T21.clus.P(i))])
-% *******************************************************
-% Post-hoc Clus: 1
-% t-val 5.2439
-% Cohen d 0.39612
-% cluster sig 1.2547e-06
-    end
-    
-    numclus = sum(statsG2G1_T21.clus.P < 0.025);
-    for i = 1 : numclus
-        AAL2C2 = AAL(statsG2G1_T21.clusid==i);
-        unique(AAL2C2)
-        %f= figure,
-        %hist(AAL(statsG2G1_T21.clusid==i),unique(AAL(statsG2G1_T21.clusid==i)));
-        %exportfigbo(f,[RPATH 'G2presence' num2str(i) '.png'],'png',10);
-        vertexid = find(statsG2G1_T21.t == max(statsG2G1_T21.t(statsG2G1_T21.clusid==i)));
-        aalnum = AAL(:,vertexid);
-        coordinate = SM.coord(:,vertexid)';
-        maxtval = max(statsG2G1_T21.t(statsG2G1_T21.clusid==i));
-        disp([ 't-val = ' num2str(maxtval) ' AAL: ' num2str(aalnum) ', coordinate: '  num2str(coordinate)])    
-        %  0     1     3     5     7     9    11    13    15    23    25
-        % t-val = 5,0324 AAL: 13, coordinate: -40.1846      29.9264      13.0839
-        % NEW
-%         1     3     5     7     9    11    13    15    23    25
-%         t-val = 5.0486 AAL: 13, coordinate: -40.1846      29.9264      13.0839
-    end
-    
-    
-    contrast = ((((G4.Group_1.* DT.T2)-(G4.Group_1.* DT.T1)) - ((G4.Group_2.* DT.T2)-(G4.Group_2.* DT.T1))))- ...
-        (((G4.Group_2.* DT.T1)-(G4.Group_2.* DT.T0)) + ((G4.Group_1.* DT.T1)-(G4.Group_1.* DT.T0)))
-    
-    slm  	= SurfStatT(slm,contrast);
-    statsG1G2_T21   = BoSurfStatPlotAllStats(slm, SM, mask, p_thresh, 0.025, ...
-        [RPATH 'FIGURE2A.CT.G1-G2.T1T2+.FAC.days.'],1);
-    
-    numclus = sum(statsG1G2_T21.clus.P<0.025)
-    for i = 1:numclus
-        ROI = mean(CT(keep,statsG1G2_T21.clusid==i),2);
-        slma      = SurfStatLinMod(ROI,M);
-        slma      = SurfStatT(slma,contrast); 
-        disp('*******************************************************')
-        disp(['Post-hoc Clus: ' num2str(i)]) 
-        disp([ 't-val ' num2str(slma.t)])   
-        d = 2*(slma.t) / sqrt(slma.df);
-        disp([ 'Cohen d ' num2str(d)])
-        disp([ 'cluster sig ' num2str(statsG1G2_T21.clus.P(i))])
-% *******************************************************
-% Post-hoc Clus: 1
-% t-val 5.7655
-% Cohen d 0.43552
-% cluster sig 1.2527e-06
-% *******************************************************
-% Post-hoc Clus: 2
-% t-val 3.6182
-% Cohen d 0.27331
-% cluster sig 8.8456e-05
-% *******************************************************
-% Post-hoc Clus: 3
-% t-val 3.9276
-% Cohen d 0.29669
-% cluster sig 0.01308
-% *******************************************************
-% Post-hoc Clus: 4
-% t-val 3.6801
-% Cohen d 0.27799
-% cluster sig 0.017573
-    end
-    
-    numclus = sum(statsG1G2_T21.clus.P < 0.025);
-    for i = 1 : numclus
-        AAL2C2 = AAL(statsG1G2_T21.clusid==i);
-        unique(AAL2C2)
-%         f= figure,
-%         hist(AAL(statsG1G2_T21.clusid==i),unique(AAL(statsG1G2_T21.clusid==i)));
-%         exportfigbo(f,[RPATH 'G2presence' num2str(i) '.png'],'png',10);
-        vertexid = find(statsG1G2_T21.t == max(statsG1G2_T21.t(statsG1G2_T21.clusid==i)));
-        aalnum = AAL(:,vertexid);
-        coordinate = SM.coord(:,vertexid)';
-        maxtval = max(statsG1G2_T21.t(statsG1G2_T21.clusid==i));
-        disp([ 't-val = ' num2str(maxtval) ' AAL: ' num2str(aalnum) ', coordinate: '  num2str(coordinate)])    
-%         2     8    12    14    16    18    58
-%         t-val = 4.10 AAL: 14, coordinate: 54.2935       29.129      2.25135
-%         64    82
-%         t-val = 3.17 AAL: 82, coordinate: 64.0045     -33.1973      16.0255
-%         0    51    53    55    85    89
-%         t-val = 3.61 AAL: 85, coordinate: -58.8292     -44.6253     -10.4067
-%         0    61    63    65    85
-%         t-val = 3.20 AAL: 61, coordinate: -57.5676     -44.5012      39.0814
-%         0    33    35    67    69
-%         t-val = 3.57 AAL: 33, coordinate: -7.97467     -40.1174      38.1422
-
-%NEW
-%      1     2     8    12    14    16    18    30    58    64
-% t-val = 4.09 AAL: 14, coordinate: 54.2935       29.129      2.25135
-%      1    51    53    55    85    89
-% t-val = 3.6237 AAL: 85, coordinate: -58.8292     -44.6253     -10.4067
-%      1    33    35    67    69
-% t-val = 3.5742 AAL: 33, coordinate: -7.97467     -40.1174      38.1422
-%      1    61    63    65    85
-% t-val = 3.264 AAL: 61, coordinate: -57.5676     -44.5012      39.0814
-    end
-    
-    
-    %% T3_T2: 
-    
-    contrast = ((((G4.Group_2.* DT.T3)-(G4.Group_2.* DT.T2)) - ((G4.Group_1.* DT.T3)-(G4.Group_1.* DT.T2)))) - ...
-        ((G4.Group_1.* DT.T2)-(G4.Group_1.* DT.T1)) - ((G4.Group_2.* DT.T2)-(G4.Group_2.* DT.T1))- ...
-        ((G4.Group_2.* DT.T1)-(G4.Group_2.* DT.T0)) - ((G4.Group_1.* DT.T1)-(G4.Group_1.* DT.T0))
-    
-    slm  	= SurfStatT(slm,contrast);
-    statsG2G1_T23   = BoSurfStatPlotAllStats(slm, SM, mask, p_thresh, 0.025, ...
-        [RPATH 'FIGURE2A.CT.G2-G1.T3T2+.FAC.days.'],1);
-    
-    
-    numclus = sum(statsG2G1_T23.clus.P<0.025)
-    for i = 1:numclus
-        ROI = mean(CT(keep,statsG2G1_T23.clusid==i),2);
-        slma      = SurfStatLinMod(ROI,M);
-        slma      = SurfStatT(slma,contrast); 
-        disp('*******************************************************')
-        disp(['Post-hoc Clus: ' num2str(i)]) 
-        disp([ 't-val ' num2str(slma.t)])   
-        d = 2*(slma.t) / sqrt(slma.df);
-        disp([ 'Cohen d ' num2str(d)])
-        disp([ 'cluster sig ' num2str(statsG2G1_T23.clus.P(i))])
-% *******************************************************
-% Post-hoc Clus: 1
-% t-val 3.6585
-% Cohen d 0.27636
-% cluster sig 0.00085688
-% *******************************************************
-% Post-hoc Clus: 2
-% t-val 4.6712
-% Cohen d 0.35285
-% cluster sig 0.0011961
-% *******************************************************
-% Post-hoc Clus: 3
-% t-val 3.9191
-% Cohen d 0.29604
-% cluster sig 0.010455
-% *******************************************************
-% Post-hoc Clus: 4
-% t-val 4.2289
-% Cohen d 0.31945
-% cluster sig 0.013548
-    end
-    
-    numclus = sum(statsG2G1_T23.clus.P < 0.025);
-    for i = 1 : numclus
-        AAL2C2 = AAL(statsG2G1_T23.clusid==i);
-        unique(AAL2C2)
-%         f= figure,
-%         hist(AAL(statsG2G1_T23.clusid==i),unique(AAL(statsG2G1_T23.clusid==i)));
-%         exportfigbo(f,[RPATH 'G2_G1_T2T3' num2str(i) '.png'],'png',10);
-        vertexid = find(statsG2G1_T23.t == max(statsG2G1_T23.t(statsG2G1_T23.clusid==i)));
-        aalnum = AAL(:,vertexid);
-        coordinate = SM.coord(:,vertexid)';
-        maxtval = max(statsG2G1_T23.t(statsG2G1_T23.clusid==i));
-        disp([ 't-val = ' num2str(maxtval) ' AAL: ' num2str(aalnum) ', coordinate: '  num2str(coordinate)])    
-%      0    18    62    64    66    82    86
-% t-val = 3.5695 AAL: 82, coordinate: 59.4246     -43.6284      16.3785
-%     0    19    33    67    69
-% t-val = 4.3564 AAL: 33, coordinate: -17.5391     -33.6701       41.906
-%     40    56
-% t-val = 3.4905 AAL: 40, coordinate: 23.7569     -29.2995     -22.9605
-%     39    47    55
-% t-val = 3.9825 AAL: 39, coordinate: -22.6042     -31.1043     -22.4635
-
-%NEW
-
-%   64    66    82    86
-% t-val = 3.3937 AAL: 66, coordinate: 47.9344     -54.9842      31.4392
-%      1    19    33    67    69
-% t-val = 4.417 AAL: 33, coordinate: -17.5391     -33.6701       41.906
-%     39    47    55
-% t-val = 4.0056 AAL: 39, coordinate: -22.6042     -31.1043     -22.4635
-%     40    56
-% t-val = 3.3402 AAL: 40, coordinate: 21.515     -29.2189     -20.7169
-    end
-    
-    
-    contrast = ((((G4.Group_1.* DT.T3)-(G4.Group_1.* DT.T2)) - ((G4.Group_2.* DT.T3)-(G4.Group_2.* DT.T2)))) - ...
-        ((G4.Group_2.* DT.T2)-(G4.Group_2.* DT.T1)) - ((G4.Group_1.* DT.T2)-(G4.Group_1.* DT.T1))- ...
-        ((G4.Group_2.* DT.T1)-(G4.Group_2.* DT.T0)) - ((G4.Group_1.* DT.T1)-(G4.Group_1.* DT.T0))
-    
-    slm  	= SurfStatT(slm,contrast);
-    statsG1G2_T23  = BoSurfStatPlotAllStats(slm, SM, mask, p_thresh, 0.025, ...
-        [RPATH 'FIGURE2A.CT.G1-G2.T3T2+.FAC.days.'],1);
-    
-    numclus = sum(statsG1G2_T23.clus.P<0.025)
-    for i = 1:numclus
-        ROI = mean(CT(keep,statsG1G2_T23.clusid==i),2);
-        slma      = SurfStatLinMod(ROI,M);
-        slma      = SurfStatT(slma,contrast); 
-        disp('*******************************************************')
-        disp(['Post-hoc Clus: ' num2str(i)]) 
-        disp([ 't-val ' num2str(slma.t)])   
-        d = 2*(slma.t) / sqrt(slma.df);
-        disp([ 'Cohen d ' num2str(d)])
-        disp([ 'cluster sig ' num2str(statsG1G2_T23.clus.P(i))])
-% *******************************************************
-% Post-hoc Clus: 1
-% t-val 4.4961
-% Cohen d 0.33963
-% cluster sig 1.305e-06
-% *******************************************************
-% Post-hoc Clus: 2
-% t-val 3.774
-% Cohen d 0.28508
-% cluster sig 7.1078e-05
-% *******************************************************
-% Post-hoc Clus: 3
-% t-val 4.0503
-% Cohen d 0.30595
-% cluster sig 0.00010615
-% *******************************************************
-% Post-hoc Clus: 4
-% t-val 3.846
-% Cohen d 0.29052
-% cluster sig 0.0026042
-    end
-    
-    numclus = sum(statsG1G2_T23.clus.P < 0.025);
-    for i = 1 : numclus
-        AAL2C2 = AAL(statsG1G2_T23.clusid==i);
-        unique(AAL2C2)
-        f= figure,
-        hist(AAL(statsG1G2_T23.clusid==i),unique(AAL(statsG1G2_T23.clusid==i)));
-        exportfigbo(f,[RPATH 'G2presence' num2str(i) '.png'],'png',10);
-        vertexid = find(statsG1G2_T23.t == max(statsG1G2_T23.t(statsG1G2_T23.clusid==i)));
-        aalnum = AAL(:,vertexid);
-        coordinate = SM.coord(:,vertexid)';
-        maxtval = max(statsG1G2_T23.t(statsG1G2_T23.clusid==i));
-        disp([ 't-val = ' num2str(maxtval) ' AAL: ' num2str(aalnum) ', coordinate: '  num2str(coordinate)]) 
-%         0    43    45    47    49    55
-%         t-val = 3.8638 AAL: 43, coordinate: -14.4503     -74.1318        10.25
-%         0    43    44    46    48    50    56
-%         t-val = 4.1978 AAL: 48, coordinate: 10.4429     -84.4072     -13.6755
-%         0    81    85
-%         t-val = 3.2933 AAL: 85, coordinate: -51.6114      -42.358    -0.877889
-%         86    90
-%         t-val = 3.1861 AAL: 86, coordinate: 61.4449     -48.3575     -6.07904
-
-%NEW
-%    1    43    45    47    49    51    55
-% t-val = 3.8645 AAL: 43, coordinate: -14.4503     -74.1318        10.25
-%    1    81    85
-% t-val = 3.4089 AAL: 81, coordinate: -64.7227     -25.7469      6.71894
-%      1    43    44    46    48    50    56
-% t-val = 4.1219 AAL: 48, coordinate: 10.4429     -84.4072     -13.6755
-%      1    82    86    90
-% t-val = 3.3386 AAL: 86, coordinate: 64.9292     -46.4401     -5.52821
-    end
-    
-    
-    
-    %% presence versus perspective
-    contrast = ((((G4.Group_2.* DT.T1)-(G4.Group_2.* DT.T0)) + ((G4.Group_1.* DT.T1)-(G4.Group_1.* DT.T0)))) - ... 
-    ((((G4.Group_2.* DT.T2)-(G4.Group_2.* DT.T1)) + ((G4.Group_1.* DT.T3)-(G4.Group_1.* DT.T2)))) 
-    slm  	   = SurfStatT(slm,contrast);
-    statsprp   = BoSurfStatPlotAllStatsNew(slm, SM, mask, p_thresh, 0.025, ...
-        [RPATH 'FIGURE2A.CT.presence-perspective.FAC.days.'],1);
-   
-    
-    numclus = sum(statsprp.clus.P<0.025)
-    for i = 1:numclus
-        ROI = mean(CT(keep,statsprp.clusid==i),2);
-        slma      = SurfStatLinMod(ROI,M);
-        slma      = SurfStatT(slma,contrast); 
-        disp('*******************************************************')
-        disp(['Post-hoc Clus: ' num2str(i)]) 
-        disp([ 't-val ' num2str(slma.t)])   
-        d = 2*(slma.t) / sqrt(slma.df);
-        disp([ 'Cohen d ' num2str(d)])
-        disp([ 'cluster sig ' num2str(statsprp.clus.P(i))])
-% *******************************************************
-% Post-hoc Clus: 1
-% t-val 4.7795
-% Cohen d 0.36103
-% cluster sig 1.2527e-06
-    end
-    
-    numclus = sum(statsprp.clus.P < 0.025);
-    for i = 1 : numclus
-        AAL2C2 = AAL(statsprp.clusid==i);
-        unique(AAL2C2)
-%         f= figure,
-%         hist(AAL(statsprp.clusid==i),unique(AAL(statsprp.clusid==i)));
-%         exportfigbo(f,[RPATH 'G2presence' num2str(i) '.png'],'png',10);
-        vertexid = find(statsprp.t == max(statsprp.t(statsprp.clusid==i)));
-        aalnum = AAL(:,vertexid);
-        coordinate = SM.coord(:,vertexid)';
-         maxtval = max(statsprp.t(statsprp.clusid==i));
-        disp([ 't-val = ' num2str(maxtval) ' AAL: ' num2str(aalnum) ', coordinate: '  num2str(coordinate)])
-%         0     4     6     8    10    14    16    20    24    26    34
-%         t-val = 4.4333 AAL: 4, coordinate: 20.9469      21.1914      45.1848
-%NEW
-%      1     2     4     6     8    10    14    16    20    24    26    34
-% t-val = 4.5074 AAL: 4, coordinate: 20.9469      21.1914      45.1848
-    end
-
-    numclus = sum(statsprp.inv_clus.P<0.025)
-    for i = 1:numclus
-        ROI = mean(CT(keep,statsprp.inv_clusid==i),2);
-        slma      = SurfStatLinMod(ROI,M);
-        slma      = SurfStatT(slma,contrast); 
-        disp('*******************************************************')
-        disp(['Post-hoc Clus: ' num2str(i)]) 
-        disp([ 't-val ' num2str(slma.t)])   
-        d = 2*(slma.t) / sqrt(slma.df);
-        disp([ 'Cohen d ' num2str(d)])
-        disp([ 'cluster sig ' num2str(statsprp.inv_clus.P(i))])
-% *******************************************************
-% Post-hoc Clus: 1
-% t-val -3.2869
-% Cohen d -0.24829
-% cluster sig 0.0050107
-    end
-    
-    numclus = sum(statsprp.inv_clus.P < 0.025);
-    for i = 1 : numclus
-        AAL2C2 = AAL(statsprp.inv_clusid==i);
-        unique(AAL2C2)
-%         f= figure,
-%         hist(AAL(statsprp.inv_clusid==i),unique(AAL(statsprp.inv_clusid==i)));
-%         exportfigbo(f,[RPATH 'G2presence' num2str(i) '.png'],'png',10);
-        vertexid = find(statsprp.inv_t == max(statsprp.inv_t(statsprp.inv_clusid==i)));
-        aalnum = AAL(:,vertexid);
-        coordinate = SM.coord(:,vertexid)';
-        maxtval = max(statsprp.inv_t(statsprp.inv_clusid==i));
-        disp([ 't-val = ' num2str(maxtval) ' AAL: ' num2str(aalnum) ', coordinate: '  num2str(coordinate)])
-%         0    43    45    47    49    51
-%         t-val = 3.2502 AAL: 47, coordinate: -8.21578      -85.058     -7.84128
-
-%NEW
-%      1    43    45    47    49    51
-% t-val = 3.2648 AAL: 47, coordinate: -8.21578      -85.058     -7.84128
-    end
-    
-    
-    %% presence versus affect
-    contrast   = ((((G4.Group_2.* DT.T1)-(G4.Group_2.* DT.T0)) + ((G4.Group_1.* DT.T1)-(G4.Group_1.* DT.T0)))) - ... 
-    ((((G4.Group_2.* DT.T3)-(G4.Group_2.* DT.T2)) + ((G4.Group_1.* DT.T2)-(G4.Group_1.* DT.T1))))
-    slm  	   = SurfStatT(slm,contrast);
-    statspra   = BoSurfStatPlotAllStatsNew(slm, SM, mask, p_thresh, 0.025, ...
-        [RPATH 'FIGURE2A.CT.presence-affect.FAC.days.'],1);
-    
-    numclus = sum(statspra.clus.P<0.025)
-    for i = 1:numclus
-        ROI = mean(CT(keep,statspra.clusid==i),2);
-        slma      = SurfStatLinMod(ROI,M);
-        slma      = SurfStatT(slma,contrast); 
-        disp('*******************************************************')
-        disp(['Post-hoc Clus: ' num2str(i)]) 
-        disp([ 't-val ' num2str(slma.t)])   
-        d = 2*(slma.t) / sqrt(slma.df);
-        disp([ 'Cohen d ' num2str(d)])
-        disp([ 'cluster sig ' num2str(statspra.clus.P(i))])
-% *******************************************************
-% Post-hoc Clus: 1
-% t-val 4.84
-% Cohen d 0.36561
-% cluster sig 1.512e-06
-% *******************************************************
-% Post-hoc Clus: 2
-% t-val 4.2122
-% Cohen d 0.31818
-% cluster sig 0.0016375
-    end
-    
-    numclus = sum(statspra.clus.P < 0.025);
-    for i = 1 : numclus
-        AAL2C2 = AAL(statspra.clusid==i);
-        unique(AAL2C2)
-        f= figure,
-        hist(AAL(statspra.clusid==i),unique(AAL(statspra.clusid==i)));
-        exportfigbo(f,[RPATH 'G2presence' num2str(i) '.png'],'png',10);
-        vertexid = find(statspra.t == max(statspra.t(statspra.clusid==i)));
-        aalnum = AAL(:,vertexid);
-        coordinate = SM.coord(:,vertexid)';
-        maxtval = max(statspra.t(statspra.clusid==i));
-        disp([ 't-val = ' num2str(maxtval) ' AAL: ' num2str(aalnum) ', coordinate: '  num2str(coordinate)])
-%         0     3     5     7     9    13    15    23    25    27
-%         t-val = 3.5905 AAL: 3, coordinate: -32.4077      53.1346    -0.876738
-%         0     6    10    16    26    28
-%         t-val = 3.8899 AAL: 28, coordinate: 3.44955      43.2282     -21.7404
-
-%NEW
-%      1     3     5     7     9    13    15    23    25    27
-% t-val = 3.5257 AAL: 3, coordinate: -32.4077      53.1346    -0.876738
-%      1     6    10    16    26    28
-% t-val = 3.7946 AAL: 28, coordinate: 3.44955      43.2282     -21.7404
-    end
-
-    numclus = sum(statspra.inv_clus.P<0.025)
-    for i = 1:numclus
-        ROI = mean(CT(keep,statspra.inv_clusid==i),2);
-        slma      = SurfStatLinMod(ROI,M);
-        slma      = SurfStatT(slma,contrast); 
-        disp('*******************************************************')
-        disp(['Post-hoc Clus: ' num2str(i)]) 
-        disp([ 't-val ' num2str(slma.t)])   
-        d = 2*(slma.t) / sqrt(slma.df);
-        disp([ 'Cohen d ' num2str(d)])
-        disp([ 'cluster sig ' num2str(statspra.inv_clus.P(i))])
-% *******************************************************
-% Post-hoc Clus: 1
-% t-val -5.5784
-% Cohen d -0.42139
-% cluster sig 1.2528e-06
-% *******************************************************
-% Post-hoc Clus: 2
-% t-val -3.8816
-% Cohen d -0.29322
-% cluster sig 0.011749
-% *******************************************************
-% Post-hoc Clus: 3
-% t-val -4.0282
-% Cohen d -0.30428
-% cluster sig 0.013263
-    end
-    
-    numclus = sum(statspra.inv_clus.P < 0.025);
-    for i = 1 : numclus
-        AAL2C2 = AAL(statspra.inv_clusid==i);
-        unique(AAL2C2)
-        f= figure,
-        hist(AAL(statspra.inv_clusid==i),unique(AAL(statspra.inv_clusid==i)));
-        exportfigbo(f,[RPATH 'G2presence' num2str(i) '.png'],'png',10);
-        vertexid = find(statspra.inv_t == max(statspra.inv_t(statspra.inv_clusid==i)));
-        aalnum = AAL(:,vertexid);
-        coordinate = SM.coord(:,vertexid)';
-        maxtval = max(statspra.inv_t(statspra.inv_clusid==i));
-        disp([ 't-val = ' num2str(maxtval) ' AAL: ' num2str(aalnum) ', coordinate: '  num2str(coordinate)])
-%         2     8    12    14    18    58
-%         t-val = 3.9407 AAL: 2, coordinate: 44.9294       1.0018      46.7104
-%         64    82
-%         t-val = 3.4047 AAL: 82, coordinate: 64.0045     -33.1973      16.0255
-%         0    18    58    64
-%         t-val = 3.4129 AAL: 64, coordinate: 59.3674     -23.2183       31.263
-
-%NEW
-%      1     2     8    12    14    18    30    58    64    82
-% t-val = 4.135 AAL: 2, coordinate: 47.1103      2.52934      46.6577
-%     40    48    56
-% t-val = 3.4587 AAL: 40, coordinate: 22.242     -23.3646     -26.1356
-%      1    33    35    67    69
-% t-val = 3.5479 AAL: 33, coordinate: -7.97467     -40.1174      38.1422
-    end
-    
-    
-    
-    %% affect only
-    contrast = ((((G4.Group_2.* DT.T3)-(G4.Group_2.* DT.T2)) + ((G4.Group_1.* DT.T2)-(G4.Group_1.* DT.T1)))) - ...
-         ((((G4.Group_2.* DT.T1)-(G4.Group_2.* DT.T0)) + ((G4.Group_1.* DT.T1)-(G4.Group_1.* DT.T0))))-...
-        ((G4.Group_2.* DT.T2)-(G4.Group_2.* DT.T1))
-    slm  	= SurfStatT(slm,contrast);
-    statspra   = BoSurfStatPlotAllStatsNew(slm, SM, mask, p_thresh, 0.025, ...
-        [RPATH 'FIGURE2A.CT.affect.FAC.days.'],1);
-    
-    %% affect G2
-    contrast = ((((G4.Group_2.* DT.T3)-(G4.Group_2.* DT.T2)))) - ((((G4.Group_2.* DT.T2)-(G4.Group_2.* DT.T1)))) - ...
-    ((((G4.Group_2.* DT.T1)-(G4.Group_2.* DT.T0))))
-    slm  	= SurfStatT(slm,contrast);
-    statspra   = BoSurfStatPlotAllStatsNew(slm, SM, mask, p_thresh, 0.025, ...
-        [RPATH 'FIGURE2A.CT.affectG2.FAC.days.'],1);
-   
-    %% affect G2
-    contrast = ((G4.Group_1.* DT.T2)-(G4.Group_1.* DT.T1)) - ((G4.Group_1.* DT.T1)-(G4.Group_1.* DT.T0)) 
-    slm  	= SurfStatT(slm,contrast);
-    statspra   = BoSurfStatPlotAllStatsNew(slm, SM, mask, p_thresh, 0.025, ...
-        [RPATH 'FIGURE2A.CT.affectG1.FAC.days.'],1);
-   
-   
-    %% perspective only
-    contrast = ((((G4.Group_2.* DT.T2)-(G4.Group_2.* DT.T1)) + ((G4.Group_1.* DT.T3)-(G4.Group_1.* DT.T2))))- ...
-        ((((G4.Group_2.* DT.T1)-(G4.Group_2.* DT.T0)) + ((G4.Group_1.* DT.T1)-(G4.Group_1.* DT.T0))))-...
-        ((G4.Group_1.* DT.T2)-(G4.Group_1.* DT.T1))
-    slm  	= SurfStatT(slm,contrast);
-    statspra   = BoSurfStatPlotAllStatsNew(slm, SM, mask, p_thresh, 0.025, ...
-        [RPATH 'FIGURE2A.CT.perspective.FAC.days.'],1);
-    
-    contrast = ((G4.Group_2.* DT.T2)-(G4.Group_2.* DT.T1)) - ((G4.Group_2.* DT.T1)-(G4.Group_2.* DT.T0))
-    slm  	= SurfStatT(slm,contrast);
-    statspra   = BoSurfStatPlotAllStatsNew(slm, SM, mask, p_thresh, 0.025, ...
-        [RPATH 'FIGURE2A.CT.perspectiveG2.FAC.days.'],1);
-   
-     contrast = ((G4.Group_1.* DT.T3)-(G4.Group_1.* DT.T2)) - ((G4.Group_1.* DT.T2)-(G4.Group_1.* DT.T1)) - ...
-         ((G4.Group_1.* DT.T1)-(G4.Group_1.* DT.T0))
-    slm  	= SurfStatT(slm,contrast);
-    statspra   = BoSurfStatPlotAllStatsNew(slm, SM, mask, p_thresh, 0.025, ...
-        [RPATH 'FIGURE2A.CT.perspectiveG1.FAC.days.'],1);
-    
-    %% presence only
-    contrast = ((((G4.Group_2.* DT.T1)-(G4.Group_2.* DT.T0)) + ((G4.Group_1.* DT.T1)-(G4.Group_1.* DT.T0))))
-    slm  	= SurfStatT(slm,contrast);
-    statspra   = BoSurfStatPlotAllStatsNew(slm, SM, mask, p_thresh, 0.025, ...
-        [RPATH 'FIGURE2A.CT.presence.FAC.days.'],1);
-   
-    contrast = ((G4.Group_2.* DT.T1)-(G4.Group_2.* DT.T0))
-    slm  	= SurfStatT(slm,contrast);
-    statspra   = BoSurfStatPlotAllStatsNew(slm, SM, mask, p_thresh, 0.025, ...
-        [RPATH 'FIGURE2A.CT.presenceG2.FAC.days.'],1);
-    
-    contrast = ((((G4.Group_1.* DT.T1)-(G4.Group_1.* DT.T0))))
-    slm  	= SurfStatT(slm,contrast);
-    statspra   = BoSurfStatPlotAllStatsNew(slm, SM, mask, p_thresh, 0.025, ...
-        [RPATH 'FIGURE2A.CT.presenceG1.FAC.days.'],1);
-    
-    %% post-hoc for significant seeds;
-    numclus = sum(F5E_stats.inv_clus.P<0.05)
-    for j = [1 : numclus]
-    mysites={'Berlin','Leipzig'};
-    for s = 1:2
-        disp(mysites(s))
-        k   = find(strcmp(site,mysites(s)));
-        k   = intersect(keep,k);
-        seedx       = mean(CT(k,find(F2E_stats.clusid==j)),2);
-        seedxt      = term(seedx);
-        ik1      = id(k,:);
-        tfack1   = tp(k);
-        g4k1     = group4(k);
-        ak1      = age(k);
-        sk1      = sex(k);
-        
-        A1       = term(ak1);
-        S1      = term(sk1);
-        G41      = term(g4k1);
-        Sub1     = term(ik1);
-        DT1      = term(tfack1);
-
-        % model2
-        M1       = 1 + Sub1 + A1 + S1 + G41 + DT1 + G41*DT1;
-        slm = SurfStatLinMod(seedx,M1);
-        slm = SurfStatT(slm, ((G41.Group_1.* DT1.T2)-(G41.Group_1.* DT1.T1)) - ((G41.Group_2.* DT1.T2)-(G41.Group_2.* DT1.T1)));
-        disp([ 'ROI: ' num2str(j) ',t= ' num2str(slm.t)])
-        slm = SurfStatT(slm, ((G41.Group_1.* DT1.T2)-(G41.Group_1.* DT1.T1))-((G41.Control.* DT1.T2)-(G41.Control.* DT1.T1)));
-        disp([ 'ROI: ' num2str(j) ',t= ' num2str(slm.t)])
-    end
-    end
-    
-    %% sequence effect: what happens to previous significant seed changes? 
-    numclus = sum(F1A_stats.clus.P<0.05)
-    for j = [1 : numclus]
-        seedx       = mean(CT(keep,find(F1A_stats.clusid==j)),2);
-        seedxt      = term(seedx);
-        slm = SurfStatLinMod(seedx,M);
-        slm = SurfStatT(slm, ((G4.Group_1.* DT.T2)-(G4.Group_1.* DT.T1)) - ((G4.Group_2.* DT.T2)-(G4.Group_2.* DT.T1)));
-        disp([ 'ROI: ' num2str(j) ',t= ' num2str(slm.t)])
-        slm = SurfStatT(slm, ((G4.Group_1.* DT.T2)-(G4.Group_1.* DT.T1)) - ((G4.Control.* DT.T2)-(G4.Control.* DT.T1)));
-        disp([ 'TC1-RCC ROI: ' num2str(j) ',t= ' num2str(slm.t)])
-        slm = SurfStatT(slm, ((G4.Group_2.* DT.T2)-(G4.Group_2.* DT.T1)) - ((G4.Control.* DT.T2)-(G4.Control.* DT.T1)));
-        disp([ 'TC2-RCC ROI: ' num2str(j) ',t= ' num2str(slm.t)])
-        slm = SurfStatT(slm, ((G4.Group_1.* DT.T2)-(G4.Group_1.* DT.T1)));
-        disp([ 'TC1 ROI: ' num2str(j) ',t= ' num2str(slm.t)])
-        slm = SurfStatT(slm, ((G4.Group_2.* DT.T2)-(G4.Group_2.* DT.T1)));
-        disp([ 'TC2 ROI: ' num2str(j) ',t= ' num2str(slm.t)])
-        
-%         ROI: 1,t= 0.056489
-%         TC1-RCC ROI: 1,t= 1.5054
-%         TC2-RCC ROI: 1,t= 1.4541
-%         TC1 ROI: 1,t= 1.1438
-%         TC2 ROI: 1,t= 1.0539
-    end
-    
-    %% covariance affect > perspective
-    j = [1]
-    vertexid    = find(F2E_stats.t == max(F2E_stats.t(F2E_stats.clusid==j)))
-    seedx       = mean(Ck(:,vertexid),2);
-    seedxt      = term(seedx);
-        %% covariance
-    M       = 1 + Sub +  A + S + G4 + DT + G4*DT + G4*seedxt + DT*seedxt + DT*G4*seedxt;
-
-    contrast = ((G4.Group_1.*DT.T2.*seedx)-(G4.Group_1.*DT.T1.*seedx))-((G4.Group_2.*DT.T2.*seedx)-(G4.Group_2.*DT.T1.*seedx))
-    % FIGURE1A -- TC1+TC2
-    slm = SurfStatLinMod(Ck,M,SW);
-    slm  	= SurfStatT(slm,contrast);
-    stats   = BoSurfStatPlotAllStatsNew(slm, SM, mask, p_thresh, 0.05, ...
-        [RPATH 'FIGURE1AA.CT.T2-T1.G1-G2.COV.peak.'],1);
-    
-    
-    %% covariance affect > perspective
-    j = [2]
-    vertexid    = find(F2E_stats.inv_t == max(F2E_stats.inv_t(F2E_stats.inv_clusid==j)))
-    seedx       = mean(Ck(:,vertexid),2);
-    seedxt      = term(seedx);
-        %% covariance
-    M       = 1 + Sub +  A + S + G4 + DT + G4*DT + G4*seedxt + DT*seedxt + DT*G4*seedxt;
-
-    contrast = ((G4.Group_2.*DT.T2.*seedx)-(G4.Group_2.*DT.T1.*seedx))-((G4.Group_1.*DT.T2.*seedx)-(G4.Group_1.*DT.T1.*seedx))
-    % FIGURE1A -- TC1+TC2
-    slm = SurfStatLinMod(Ck,M,SW);
-    slm  	= SurfStatT(slm,contrast);
-    stats   = BoSurfStatPlotAllStatsNew(slm, SM, mask, p_thresh, 0.05, ...
-        [RPATH 'FIGURE1AA.CT.T2-T1.G2-G1.COV.peak.'],1);
-    
 end
 
 %% ATTENTION X PRESENCE X TC3
@@ -4693,3 +3828,11 @@ for FIG3B = 1
         disp([ 'ROI: ' num2str(j) ',t= ' num2str(slm.t)])
     end
 end
+
+
+
+
+
+  
+   
+ 
